@@ -1,0 +1,16 @@
+{
+  "name": "AnkiPomo",
+  "short_name": "AnkiPomo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#6366f1",
+  "description": "Minuteur Pomodoro connecté à Anki Desktop.",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

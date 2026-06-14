@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#74b9ff" />
+      <stop offset="100%" stop-color="#a29bfe" />
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#skyGrad)" />
+  <!-- Minimalist Timer outline -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#ffffff" stroke-width="20" stroke-dasharray="800" stroke-dashoffset="200" stroke-linecap="round" opacity="0.9" />
+  <!-- Lightning bolt inside -->
+  <path d="M280 80 L160 280 L240 280 L200 440 L360 220 L280 220 Z" fill="#ffffe7" />
+</svg>

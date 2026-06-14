@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anki Pomodoro - Focus & Révisions</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/logo.svg">
+  <!-- Google Fonts - Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <h1>AnkiPomo</h1>
+      </div>
+      <div class="connection-status" id="anki-status">
+        <span class="status-dot status-offline"></span>
+        <span class="status-text">Anki Déconnecté</span>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="main-layout">
+      <!-- Timer Section (Inspired directly by the screenshot) -->
+      <section class="timer-sectioncard">
+        <div class="timer-container">
+          <!-- Left: Circular Progress Bar -->
+          <div class="timer-circle-wrapper">
+            <svg class="timer-svg" width="160" height="160" viewBox="0 0 160 160">
+              <!-- Background circle (track) -->
+              <circle class="timer-track" cx="80" cy="80" r="68" fill="none" stroke-width="12" />
+              <!-- Foreground circle (progress) -->
+              <circle class="timer-progress" id="progress-bar" cx="80" cy="80" r="68" fill="none" stroke-width="12" stroke-dasharray="427" stroke-dashoffset="120" stroke-linecap="round" transform="rotate(-90 80 80)" />
+            </svg>
+            <!-- Center Button: Play/Pause -->
+            <button class="timer-control-btn" id="play-pause-btn" aria-label="Démarrer / Pause">
+              <!-- Play Icon (default hidden in break/pause state or shown depending on state) -->
+              <svg class="icon-play" id="icon-play" viewBox="0 0 24 24" width="28" height="28" style="display: none;">
+                <path d="M8 5v14l11-7z" fill="currentColor"/>
+              </svg>
+              <!-- Pause Icon (shown in the screenshot) -->
+              <svg class="icon-pause" id="icon-pause" viewBox="0 0 24 24" width="28" height="28">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Center: Timer text and state -->
+          <div class="timer-info">
+            <div class="timer-digits" id="timer-display">01:09</div>
+            <div class="timer-phase" id="timer-phase">Break</div>
+          </div>
+
+          <!-- Right: Glass pill visual reward (hot air balloons) -->
+          <div class="balloon-sky-wrapper" title="Chaque carte révisée fait décoller une montgolfière !">
+            <div class="balloon-sky" id="balloon-sky">
+              <div class="balloon-moon"></div>
+              <div class="sun-container">
+                <div class="sun-circle one"></div>
+                <div class="sun-circle two"></div>
+                <div class="sun-circle three"></div>
+                <div class="sun-circle four"></div>
+              </div>
+              <img class="balloon-hills" src="/HotAirBalloonHills.svg" alt="Hills" />
+              <!-- Balloons will spawn dynamically here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Inline Quick controls -->
+        <div class="timer-actions">
+          <button class="btn btn-secondary active" id="btn-focus">Focus</button>
+          <button class="btn btn-secondary" id="btn-short-break">Pause</button>
+          <button class="btn-icon-reset" id="btn-reset" aria-label="Réinitialiser" title="Réinitialiser le focus">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Stats Section (Anki Reviews counts during the focus session) -->
+      <section class="stats-section" id="stats-section">
+        <div class="section-title">
+          <button class="stats-toggle-btn" id="btn-toggle-stats" aria-label="Afficher/Masquer les statistiques" title="Afficher/Masquer les statistiques">
+            <span>Statistiques de Focus</span>
+            <span id="icon-eye-open" class="toggle-arrow">▲</span>
+            <span id="icon-eye-closed" class="toggle-arrow" style="display: none;">▼</span>
+          </button>
+          <span class="session-indicator" id="session-count">Session #1</span>
+        </div>
+
+        <div class="stats-content-wrapper" id="stats-content-wrapper">
+          <div class="stats-grid">
+            <!-- Total reviews -->
+            <div class="stat-card">
+              <span class="stat-icon">📚</span>
+              <div class="stat-details">
+                <span class="stat-value" id="stat-total-reviews">42</span>
+                <span class="stat-label">Révisions totales</span>
+              </div>
+            </div>
+
+            <!-- Unique cards -->
+            <div class="stat-card">
+              <span class="stat-icon">🎴</span>
+              <div class="stat-details">
+                <span class="stat-value" id="stat-unique-cards">36</span>
+                <span class="stat-label">Cartes uniques</span>
+              </div>
+            </div>
+
+            <!-- Speed -->
+            <div class="stat-card">
+              <span class="stat-icon">⏱️</span>
+              <div class="stat-details">
+                <span class="stat-value" id="stat-avg-speed">4.8s</span>
+                <span class="stat-label">Temps / carte</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rating breakdown -->
+          <div class="breakdown-card">
+            <h3>Répartition des réponses</h3>
+            <div class="breakdown-bars">
+              <div class="breakdown-bar-item">
+                <div class="bar-header">
+                  <span class="bar-label rating-again">À revoir</span>
+                  <span class="bar-count" id="count-again">3 (7%)</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill bg-again" id="fill-again" style="width: 7%;"></div>
+                </div>
+              </div>
+
+              <div class="breakdown-bar-item">
+                <div class="bar-header">
+                  <span class="bar-label rating-hard">Difficile</span>
+                  <span class="bar-count" id="count-hard">5 (12%)</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill bg-hard" id="fill-hard" style="width: 12%;"></div>
+                </div>
+              </div>
+
+              <div class="breakdown-bar-item">
+                <div class="bar-header">
+                  <span class="bar-label rating-good">Bon</span>
+                  <span class="bar-count" id="count-good">28 (67%)</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill bg-good" id="fill-good" style="width: 67%;"></div>
+                </div>
+              </div>
+
+              <div class="breakdown-bar-item">
+                <div class="bar-header">
+                  <span class="bar-label rating-easy">Facile</span>
+                  <span class="bar-count" id="count-easy">6 (14%)</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-fill bg-easy" id="fill-easy" style="width: 14%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings Section (Collapsible) -->
+      <section class="settings-section">
+        <button class="settings-toggle-btn" id="settings-toggle">
+          <span>⚙️ Paramètres</span>
+          <span class="toggle-arrow">▼</span>
+        </button>
+        <div class="settings-panel collapsed" id="settings-panel">
+          <div class="settings-group-row">
+            <div class="settings-group">
+              <label for="input-focus-time">Focus (min)</label>
+              <input type="number" id="input-focus-time" value="25" min="1" max="120">
+            </div>
+            <div class="settings-group">
+              <label for="input-break-time">Pause (min)</label>
+              <input type="number" id="input-break-time" value="5" min="1" max="60">
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <label for="input-anki-url">Serveur AnkiConnect</label>
+            <input type="text" id="input-anki-url" value="http://127.0.0.1:8765">
+          </div>
+          <div class="settings-group checkbox-group">
+            <input type="checkbox" id="input-auto-sequence" checked>
+            <label for="input-auto-sequence">Enchaîner automatiquement Focus / Pause</label>
+          </div>
+          <div class="help-box">
+            <p><strong>CORS requis :</strong> Assurez-vous d'ajouter <code>http://localhost:5173</code> à la liste <code>webCorsOriginList</code> d'AnkiConnect et de redémarrer Anki.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>AnkiPomo — Fait avec 💜 pour l'apprentissage efficace.</p>
+    </footer>
+  </div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
