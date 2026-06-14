@@ -1,28 +1,28 @@
-# ⚡ AnkiPomo — Minuteur Pomodoro & Révisions Anki
+# ⚡ AnkiPomo — Pomodoro Timer & Anki Reviews Integration
 
-**AnkiPomo** est une application web Pomodoro minimaliste et moderne, conçue pour être placée côte à côte avec **Anki Desktop**. Elle se connecte à Anki via l'extension *AnkiConnect* pour suivre vos révisions en temps réel durant vos sessions de travail et vous récompenser visuellement sans afficher de chiffres de progression stricts.
-
----
-
-## 🚀 Fonctionnalités principales
-
-- ⏱️ **Minuteur Pomodoro Fluide** : Alternance entre sessions de **Focus** (indigo) et de **Pause** (violet) avec affichage du décompte dans le titre de l'onglet.
-- 🔔 **Cloches Sonores Web Audio** : Des alertes musicales synthétisées directement par le navigateur à la fin de chaque phase (aucune ressource audio externe requise).
-- 🎈 **Récompense Visuelle "Air Balloon Cruise"** : Une capsule météo verticale affichant un paysage épuré de collines, un croissant de lune et un soleil couchant. Chaque carte révisée déclenche le vol d'une montgolfière avec un effet de parallaxe 3D (vitesse et profondeur ajustées selon la taille).
-- 🖱️ **Easter Egg Interactif** : Cliquez directement sur la capsule du ciel pour faire décoller des montgolfières manuellement et tester l'animation.
-- 📊 **Statistiques Détaillées Rétractables** : Suivi des révisions totales, cartes uniques, vitesse moyenne et répartition des réponses (À revoir, Difficile, Bon, Facile). Le panneau peut être masqué en un clic.
-- 📦 **PWA & Mode Hors Ligne** : Entièrement installable en tant qu'application native sur votre Mac ou PC. Cochez "Installer l'application" dans Chrome pour l'ajouter à votre Launchpad. Le Service Worker cache l'ensemble des fichiers pour un fonctionnement 100% hors ligne.
-- 🖥️ **Script de Lancement et Tiling macOS (`launch.command`)** : Un raccourci double-cliquable qui démarre le serveur local s'il est éteint, ouvre Anki et le minuteur, puis les range côte à côte (Anki à gauche sur les 2/3, le minuteur à droite sur le 1/3).
+**AnkiPomo** is a minimalist and modern serverless Pomodoro web application designed to run side-by-side with **Anki Desktop**. It connects to Anki via the *AnkiConnect* add-on to track your card reviews in real-time during focus sessions, rewarding you with an elegant, number-free progress visual.
 
 ---
 
-## 🛠️ Installation et Configuration
+## 🚀 Key Features
 
-### 1. Prérequis Anki Desktop
-Pour lier vos révisions à AnkiPomo, vous devez installer et configurer **AnkiConnect** :
+- ⏱️ **Fluid Pomodoro Timer**: Alternates between **Focus** (indigo) and **Break** (purple) sessions with browser tab countdowns.
+- 🔔 **Web Audio Synthesizer Chimes**: Crystal-clear bell sounds synthesized directly by the browser at the end of each session (no external audio assets required).
+- 🎈 **"Air Balloon Cruise" Visual Reward**: An elegant weather-themed sky capsule featuring minimalist hills, a crescent moon, and a radiating sunset. Each reviewed card launches a hot air balloon with dynamic 3D depth parallax (speed and vertical layers scale realistically with size).
+- 🖱️ **Interactive Easter Egg**: Hover and click anywhere inside the sky capsule to manually launch hot air balloons!
+- 📊 **Collapsible Stats Dashboard**: Track total reviews, unique cards, average speed, and card rating breakdown (Again, Hard, Good, Easy). Quickly collapse the panel with a clean toggle arrow.
+- 📦 **PWA & Offline Capability**: Fully installable as a standalone application on macOS or Windows (click the install icon in Chrome/Brave/Safari). Caches all assets via a Service Worker for 100% offline usage.
+- 🖥️ **macOS Window Tiling & Server Auto-Start (`launch.command`)**: A double-clickable script that starts the local server in the background, opens Anki and AnkiPomo, and automatically tiles them side-by-side (Anki occupying the left 2/3, and AnkiPomo on the right 1/3).
 
-1. Dans Anki Desktop, allez dans **Outils** > **Greffons** > **Acquérir des greffons...** et saisissez le code : **`2055492159`**.
-2. Sélectionnez le greffon `AnkiConnect`, cliquez sur **Configuration** et ajoutez `http://localhost:5173` dans le tableau `webCorsOriginList` :
+---
+
+## 🛠️ Installation & Setup
+
+### 1. Anki Desktop Configuration
+To link your review data with AnkiPomo, you must install and configure **AnkiConnect**:
+
+1. In Anki Desktop, go to **Tools** > **Add-ons** > **Get Add-ons...** and paste the code: **`2055492159`**.
+2. Select `AnkiConnect`, click **Config**, and add `http://localhost:5173` to the `webCorsOriginList` array:
    ```json
    {
        "webCorsOriginList": [
@@ -31,12 +31,12 @@ Pour lier vos révisions à AnkiPomo, vous devez installer et configurer **AnkiC
        ]
    }
    ```
-3. **Redémarrez Anki** pour appliquer la configuration.
+3. **Restart Anki** to apply the changes.
 
 ---
 
-### 2. Démarrage du projet local
-Clonez le dépôt et installez les dépendances :
+### 2. Local Setup & Running
+Clone the repository and install the dependencies:
 
 ```bash
 git clone https://github.com/mmxm/ankipomo.git
@@ -44,29 +44,29 @@ cd ankipomo
 npm install
 ```
 
-Lancez le serveur de développement local :
+Start the local development server:
 ```bash
 npm run dev
 ```
-Ouvrez [http://localhost:5173](http://localhost:5173) dans Google Chrome.
+Open [http://localhost:5173](http://localhost:5173) in Google Chrome.
 
 ---
 
-### 3. Installation en tant que PWA (Application native)
-Pour utiliser AnkiPomo comme une application autonome :
-1. Sur Chrome, cliquez sur l'icône de **téléchargement/installation** tout à fait à droite de la barre d'adresse.
-2. L'application s'ajoutera à votre dossier d'applications macOS et s'ouvrira dans sa propre fenêtre flottante épurée.
+### 3. Install as a Standalone App (PWA)
+For a native, browser-less app feel:
+1. In Chrome, click the **Install App** icon on the far right of the address bar (omnibox).
+2. The application will be added to your macOS Applications folder/Launchpad and open in its own clean window.
 
 ---
 
-## 🖥️ Utilisation de l'automatisation macOS (`launch.command`)
+## 🖥️ macOS Automation Script (`launch.command`)
 
-Pour démarrer votre session de révisions instantanément en un clic sur Mac :
-1. Double-cliquez sur le fichier [launch.command](./launch.command) dans le dossier du projet.
-2. Le script va :
-   - Démarrer le serveur local en arrière-plan (si éteint).
-   - Lancer Anki Desktop.
-   - Lancer le minuteur en mode application épuré.
-   - Aligner Anki à gauche (2/3 de l'écran) et AnkiPomo à droite (1/3 de l'écran).
+To start your review session in one click:
+1. Double-click the [launch.command](./launch.command) file in your project folder.
+2. The script will automatically:
+   - Start the local server in the background (if it isn't running).
+   - Launch Anki Desktop.
+   - Open AnkiPomo in its standalone app window.
+   - Tile them side-by-side (Anki on the left 2/3, AnkiPomo on the right 1/3).
 
-> *Note : Au premier lancement, macOS vous demandera l'autorisation d'accorder le contrôle de l'accessibilité au Terminal pour lui permettre de redimensionner les fenêtres (Réglages Système > Confidentialité et sécurité > Accessibilité).*
+> *Note: On the first run, macOS will prompt you to grant Accessibility permissions to the Terminal in **System Settings > Privacy & Security > Accessibility** to allow window resizing.*
