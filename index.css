@@ -340,7 +340,7 @@ section {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 120px;
+  width: 140px; /* Increased from 120px to prevent cropping in input mode */
   flex-shrink: 0;
 }
 
@@ -749,6 +749,8 @@ section {
   text-align: center;
   padding: 0;
   margin: 0;
+  font-variant-numeric: tabular-nums; /* Align numbers uniformly */
+  box-sizing: border-box;
   -webkit-appearance: textfield;
   -moz-appearance: textfield;
   appearance: textfield;
