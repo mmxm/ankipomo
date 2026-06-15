@@ -39,6 +39,7 @@ const iconPause = document.getElementById('icon-pause');
 // Controls
 const btnFocus = document.getElementById('btn-focus');
 const btnShortBreak = document.getElementById('btn-short-break');
+const btnCustom = document.getElementById('btn-custom');
 const btnReset = document.getElementById('btn-reset');
 
 // Settings Inputs
@@ -203,6 +204,8 @@ function updateTimerUI() {
   progressBar.setAttribute('stroke-dashoffset', offset);
 }
 
+let customTimeMinutes = 25; // default custom timer duration
+
 function setMode(mode) {
   currentMode = mode;
   isRunning = false;
@@ -214,30 +217,37 @@ function setMode(mode) {
   iconPlay.style.display = 'block';
   iconPause.style.display = 'none';
 
-  if (mode === 'focus') {
+  // Toggle active button states
+  btnFocus.classList.remove('active');
+  btnShortBreak.classList.remove('active');
+  btnCustom.classList.remove('active');
+
+  if (mode === 'focus' || mode === 'custom') {
     bodyElement.classList.remove('theme-break');
     bodyElement.classList.add('theme-focus');
-    btnFocus.classList.add('active');
-    btnShortBreak.classList.remove('active');
-    timerPhase.textContent = 'Focus';
     progressBar.style.stroke = 'var(--primary)';
     
-    totalDuration = config.focusTime * 60;
-    timeLeft = totalDuration;
+    if (mode === 'focus') {
+      btnFocus.classList.add('active');
+      timerPhase.textContent = 'Focus';
+      totalDuration = config.focusTime * 60;
+    } else {
+      btnCustom.classList.add('active');
+      timerPhase.textContent = 'Perso';
+      totalDuration = customTimeMinutes * 60;
+    }
     
-    // Reset reviews for a brand new focus session
+    timeLeft = totalDuration;
     resetFocusStats();
-  } else {
+  } else if (mode === 'break') {
     bodyElement.classList.remove('theme-focus');
     bodyElement.classList.add('theme-break');
     btnShortBreak.classList.add('active');
-    btnFocus.classList.remove('active');
     timerPhase.textContent = 'Break';
     progressBar.style.stroke = 'var(--break)';
     
     totalDuration = config.breakTime * 60;
     timeLeft = totalDuration;
-    // Note: In break mode, we do NOT clear statistics so the user can review their focus accomplishments!
   }
   updateTimerUI();
 }
@@ -248,8 +258,8 @@ function startTimer() {
   iconPlay.style.display = 'none';
   iconPause.style.display = 'block';
 
-  // Mark start time for reviews if focusing
-  if (currentMode === 'focus' && !focusStartTime) {
+  // Mark start time for reviews if focusing or in custom mode
+  if ((currentMode === 'focus' || currentMode === 'custom') && !focusStartTime) {
     focusStartTime = Date.now();
     startAnkiPolling();
   }
@@ -264,7 +274,7 @@ function startTimer() {
       timerInterval = null;
       isRunning = false;
       
-      if (currentMode === 'focus') {
+      if (currentMode === 'focus' || currentMode === 'custom') {
         playChime('focusFinished');
         showSystemNotification("Focus Terminé ! ⚡", "C'est l'heure de faire une pause.");
         // Transition to Break
@@ -351,9 +361,9 @@ function setAnkiStatusUI(isConnected) {
   }
 }
 
-// Poll reviewed cards during Focus
+// Poll reviewed cards during Focus or Custom timer
 async function pollAnkiReviews() {
-  if (!focusStartTime || currentMode !== 'focus') return;
+  if (!focusStartTime || (currentMode !== 'focus' && currentMode !== 'custom')) return;
   
   try {
     // 1. Find cards reviewed in the last 24h (rated:1)
@@ -548,6 +558,19 @@ function initApp() {
 
   btnShortBreak.addEventListener('click', () => {
     setMode('break');
+  });
+
+  btnCustom.addEventListener('click', () => {
+    const userInput = prompt("Saisissez la durée personnalisée (en minutes) :", customTimeMinutes);
+    if (userInput !== null) {
+      const minutes = parseInt(userInput, 10);
+      if (!isNaN(minutes) && minutes > 0) {
+        customTimeMinutes = minutes;
+        setMode('custom');
+      } else {
+        alert("Veuillez saisir un nombre de minutes valide (supérieur à 0).");
+      }
+    }
   });
 
   btnReset.addEventListener('click', () => {
