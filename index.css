@@ -351,6 +351,7 @@ section {
   letter-spacing: -0.03em;
   color: #1e1b4b; /* Matches screenshot's dark purple color */
   font-variant-numeric: tabular-nums;
+  cursor: pointer;
 }
 
 .timer-phase {
@@ -733,4 +734,28 @@ section {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+}
+
+/* Inline Timer Input for Custom Duration */
+#timer-input {
+  font-family: inherit;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+#timer-input::-webkit-outer-spin-button,
+#timer-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

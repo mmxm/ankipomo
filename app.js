@@ -560,17 +560,48 @@ function initApp() {
     setMode('break');
   });
 
-  btnCustom.addEventListener('click', () => {
-    const userInput = prompt("Saisissez la durée personnalisée (en minutes) :", customTimeMinutes);
-    if (userInput !== null) {
-      const minutes = parseInt(userInput, 10);
-      if (!isNaN(minutes) && minutes > 0) {
-        customTimeMinutes = minutes;
-        setMode('custom');
-      } else {
-        alert("Veuillez saisir un nombre de minutes valide (supérieur à 0).");
+  // Helper to trigger inline editing of timer duration
+  function showTimerInput() {
+    if (isRunning) return;
+    if (document.getElementById('timer-input')) return;
+
+    // Switch to custom mode
+    setMode('custom');
+
+    const currentMins = Math.floor(timeLeft / 60);
+    timerDisplay.innerHTML = `<input type="number" id="timer-input" min="1" max="999" value="${currentMins}">`;
+
+    const input = document.getElementById('timer-input');
+    input.focus();
+    input.select();
+
+    const commitInput = () => {
+      const val = parseInt(input.value, 10);
+      if (!isNaN(val) && val > 0) {
+        customTimeMinutes = val;
+        totalDuration = customTimeMinutes * 60;
+        timeLeft = totalDuration;
       }
-    }
+      updateTimerUI(); // Restore standard MM:SS text display
+    };
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        commitInput();
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      commitInput();
+    });
+  }
+
+  btnCustom.addEventListener('click', () => {
+    showTimerInput();
+  });
+
+  timerDisplay.addEventListener('click', () => {
+    showTimerInput();
   });
 
   btnReset.addEventListener('click', () => {
