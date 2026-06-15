@@ -130,11 +130,22 @@ function showSystemNotification(title, body) {
   if (!("Notification" in window)) return;
   
   if (Notification.permission === "granted") {
-    new Notification(title, {
+    const options = {
       body: body,
       icon: '/logo.svg',
       silent: true // Custom chimes are already playing via Web Audio API
-    });
+    };
+
+    // Use Service Worker registration if available (robust for PWAs & background tabs)
+    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.showNotification(title, options);
+      }).catch(() => {
+        new Notification(title, options);
+      });
+    } else {
+      new Notification(title, options);
+    }
   }
 }
 
