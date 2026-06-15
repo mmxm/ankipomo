@@ -404,9 +404,9 @@ async function pollAnkiReviews() {
 
 function startAnkiPolling() {
   stopAnkiPolling();
-  // Poll every 5 seconds
+  // Poll every 1 second for near-instant balloon launches
   pollAnkiReviews(); // immediate run
-  ankiPollInterval = setInterval(pollAnkiReviews, 5000);
+  ankiPollInterval = setInterval(pollAnkiReviews, 1000);
 }
 
 function stopAnkiPolling() {
