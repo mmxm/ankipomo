@@ -125,6 +125,19 @@ function playChime(type) {
   }
 }
 
+// --- SYSTEM NOTIFICATIONS (macOS / Browser) ---
+function showSystemNotification(title, body) {
+  if (!("Notification" in window)) return;
+  
+  if (Notification.permission === "granted") {
+    new Notification(title, {
+      body: body,
+      icon: '/logo.svg',
+      silent: true // Custom chimes are already playing via Web Audio API
+    });
+  }
+}
+
 // --- LOCAL STORAGE & LOAD ---
 function loadConfig() {
   const saved = localStorage.getItem('anki-pomo-config');
@@ -242,12 +255,14 @@ function startTimer() {
       
       if (currentMode === 'focus') {
         playChime('focusFinished');
+        showSystemNotification("Focus Terminé ! ⚡", "C'est l'heure de faire une pause.");
         // Transition to Break
         sessionCount++;
         textSessionCount.textContent = `Session #${sessionCount}`;
         setMode('break');
       } else {
         playChime('breakFinished');
+        showSystemNotification("Pause Terminée ! 🎯", "C'est l'heure de vous concentrer.");
         // Transition to Focus
         setMode('focus');
       }
@@ -503,6 +518,11 @@ function initApp() {
 
   // Play/Pause button
   playPauseBtn.addEventListener('click', () => {
+    // Request notification permission on first interaction
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+
     if (isRunning) {
       pauseTimer();
     } else {
