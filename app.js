@@ -259,8 +259,10 @@ function startTimer() {
   iconPause.style.display = 'block';
 
   // Mark start time for reviews if focusing or in custom mode
-  if ((currentMode === 'focus' || currentMode === 'custom') && !focusStartTime) {
-    focusStartTime = Date.now();
+  if (currentMode === 'focus' || currentMode === 'custom') {
+    if (!focusStartTime) {
+      focusStartTime = Date.now();
+    }
     startAnkiPolling();
   }
 
