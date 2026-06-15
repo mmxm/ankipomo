@@ -568,18 +568,42 @@ function initApp() {
     // Switch to custom mode
     setMode('custom');
 
+    // Get current timeLeft formatted as MM:SS
     const currentMins = Math.floor(timeLeft / 60);
-    timerDisplay.innerHTML = `<input type="number" id="timer-input" min="1" max="999" value="${currentMins}">`;
+    const currentSecs = timeLeft % 60;
+    const formatted = `${currentMins.toString().padStart(2, '0')}:${currentSecs.toString().padStart(2, '0')}`;
+
+    timerDisplay.innerHTML = `<input type="text" id="timer-input" value="${formatted}">`;
 
     const input = document.getElementById('timer-input');
     input.focus();
     input.select();
 
     const commitInput = () => {
-      const val = parseInt(input.value, 10);
-      if (!isNaN(val) && val > 0) {
-        customTimeMinutes = val;
-        totalDuration = customTimeMinutes * 60;
+      const parts = input.value.trim().split(':');
+      let minutes = 0;
+      let seconds = 0;
+
+      if (parts.length === 2) {
+        minutes = parseInt(parts[0], 10) || 0;
+        seconds = parseInt(parts[1], 10) || 0;
+      } else if (parts.length === 1) {
+        minutes = parseInt(parts[0], 10) || 0;
+        seconds = 0;
+      }
+
+      // Sanitize values
+      if (minutes < 0) minutes = 0;
+      if (seconds < 0) seconds = 0;
+      if (seconds >= 60) {
+        minutes += Math.floor(seconds / 60);
+        seconds = seconds % 60;
+      }
+
+      const totalSecs = minutes * 60 + seconds;
+      if (totalSecs > 0) {
+        customTimeMinutes = totalSecs / 60; // Store as fractional minutes
+        totalDuration = totalSecs;
         timeLeft = totalDuration;
       }
       updateTimerUI(); // Restore standard MM:SS text display
